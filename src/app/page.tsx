@@ -86,8 +86,7 @@ export default function Home() {
   // Google OAuth 로그인 처리
   const handleGoogleLogin = () => {
     const params = {
-      client_id:
-        "142560295456-i4eaov3ff3i5s1vpnof8dioo81gp3icu.apps.googleusercontent.com",
+      client_id: process.env.NEXT_PUBLIC_GOOGLE_ID,
       redirect_uri: "http://localhost:3000",
       response_type: "token",
       scope:
@@ -121,35 +120,34 @@ export default function Home() {
     setUserInfo(null);
   };
 
-  // useEffect(() => {
-  //   // Google 클라이언트 로드 확인
-  //   if (window.google && window.google.accounts && window.google.accounts.id) {
-  //     const callback = (e: any) => {
-  //       console.log(e);
-  //       // "eyJhbGciOiJSUzI1NiIsImtpZCI6ImVlMTkzZDQ2NDdhYjRhMzU4NWFhOWIyYjNiNDg0YTg3YWE2OGJiNDIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxNDI1NjAyOTU0NTYtaTRlYW92M2ZmM2k1czF2cG5vZjhkaW9vODFncDNpY3UuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiIxNDI1NjAyOTU0NTYtaTRlYW92M2ZmM2k1czF2cG5vZjhkaW9vODFncDNpY3UuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDQxNDU0NDAyMjMzMDQ5OTY1ODEiLCJlbWFpbCI6ImtzaHllb24xMjNAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5iZiI6MTc0MjQyOTEzNSwibmFtZSI6InNlb2h5dW4gS2FuZyIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLVkNyLUNKNlFCVW1aQ2prb0FISnhVOTRVelZCeEJ0YlBNNG1lSjFBMElKcVVGX3c9czk2LWMiLCJnaXZlbl9uYW1lIjoic2VvaHl1biIsImZhbWlseV9uYW1lIjoiS2FuZyIsImlhdCI6MTc0MjQyOTQzNSwiZXhwIjoxNzQyNDMzMDM1LCJqdGkiOiJlMTgxMjVjZjJhYzIyZTc0ZWQxOTFjZThlNzU2M2ZlNjIyYTFiMjc5In0.iq3p7XtLyEmNj4dWWHF3XnsOZdIGToXXbLi41UT6-uOJtoMSdDPZ5gXlx53drFTN-Jf-XzaU9qoPLWWwWTiEdHoVX3FM-OEVfs9QUnSlUWkkpR9fn8e_16-RD2qiRibCDSQUWvYnrrTiyV_viqq8Szgq5eXLxQB1I7XJmsNCn8Qn3qfEq1wjq8d1NYm51C-PK-XPNR54wRXxbQtRfJW5fBDloHYHZEc6OKQn0iOpX-nbdXHm2G8As3-JcqQ_z9dh9REnUtvD7FC09CFQxVUHJIUCQyrIMvD8BykkHmK7p5Gn8wFOtsZrhR_D0U4RRSXswISLzaLd35cmy-Pw4Fb1yw"
-  //     };
-  //     // Google Identity Services 초기화
-  //     window.google.accounts.id.initialize({
-  //       client_id:
-  //         "142560295456-i4eaov3ff3i5s1vpnof8dioo81gp3icu.apps.googleusercontent.com",
-  //       callback,
-  //     });
+  useEffect(() => {
+    // Google 클라이언트 로드 확인
+    if (window.google && window.google.accounts && window.google.accounts.id) {
+      const callback = (e: any) => {
+        console.log(e);
+        // "eyJhbGciOiJSUzI1NiIsImtpZCI6ImVlMTkzZDQ2NDdhYjRhMzU4NWFhOWIyYjNiNDg0YTg3YWE2OGJiNDIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxNDI1NjAyOTU0NTYtaTRlYW92M2ZmM2k1czF2cG5vZjhkaW9vODFncDNpY3UuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiIxNDI1NjAyOTU0NTYtaTRlYW92M2ZmM2k1czF2cG5vZjhkaW9vODFncDNpY3UuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDQxNDU0NDAyMjMzMDQ5OTY1ODEiLCJlbWFpbCI6ImtzaHllb24xMjNAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5iZiI6MTc0MjQyOTEzNSwibmFtZSI6InNlb2h5dW4gS2FuZyIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLVkNyLUNKNlFCVW1aQ2prb0FISnhVOTRVelZCeEJ0YlBNNG1lSjFBMElKcVVGX3c9czk2LWMiLCJnaXZlbl9uYW1lIjoic2VvaHl1biIsImZhbWlseV9uYW1lIjoiS2FuZyIsImlhdCI6MTc0MjQyOTQzNSwiZXhwIjoxNzQyNDMzMDM1LCJqdGkiOiJlMTgxMjVjZjJhYzIyZTc0ZWQxOTFjZThlNzU2M2ZlNjIyYTFiMjc5In0.iq3p7XtLyEmNj4dWWHF3XnsOZdIGToXXbLi41UT6-uOJtoMSdDPZ5gXlx53drFTN-Jf-XzaU9qoPLWWwWTiEdHoVX3FM-OEVfs9QUnSlUWkkpR9fn8e_16-RD2qiRibCDSQUWvYnrrTiyV_viqq8Szgq5eXLxQB1I7XJmsNCn8Qn3qfEq1wjq8d1NYm51C-PK-XPNR54wRXxbQtRfJW5fBDloHYHZEc6OKQn0iOpX-nbdXHm2G8As3-JcqQ_z9dh9REnUtvD7FC09CFQxVUHJIUCQyrIMvD8BykkHmK7p5Gn8wFOtsZrhR_D0U4RRSXswISLzaLd35cmy-Pw4Fb1yw"
+      };
+      // Google Identity Services 초기화
+      window.google.accounts.id.initialize({
+        client_id: process.env.NEXT_PUBLIC_GOOGLE_ID,
+        callback,
+      });
 
-  //     // 버튼 렌더링
-  //     window.google.accounts.id.renderButton(googleButtonRef.current, {
-  //       theme: "outline", // 'outline' 또는 'filled_blue', 'filled_black' 등
-  //       size: "large", // 'large' 또는 'medium', 'small'
-  //       type: "standard", // 'standard' 또는 'icon'
-  //       text: "signin_with", // 'signin_with' 또는 'signup_with', 'continue_with', 'signin'
-  //       shape: "rectangular", // 'rectangular' 또는 'pill', 'circle', 'square'
-  //       logo_alignment: "left", // 'left' 또는 'center'
-  //       width: "280", // 픽셀 단위의 버튼 너비
-  //     });
-  //   } else {
-  //     // Google 클라이언트가 로드되지 않은 경우
-  //     console.error("Google Identity Services가 로드되지 않았습니다.");
-  //   }
-  // }, []);
+      // 버튼 렌더링
+      window.google.accounts.id.renderButton(googleButtonRef.current, {
+        theme: "outline", // 'outline' 또는 'filled_blue', 'filled_black' 등
+        size: "large", // 'large' 또는 'medium', 'small'
+        type: "standard", // 'standard' 또는 'icon'
+        text: "signin_with", // 'signin_with' 또는 'signup_with', 'continue_with', 'signin'
+        shape: "rectangular", // 'rectangular' 또는 'pill', 'circle', 'square'
+        logo_alignment: "left", // 'left' 또는 'center'
+        width: "280", // 픽셀 단위의 버튼 너비
+      });
+    } else {
+      // Google 클라이언트가 로드되지 않은 경우
+      console.error("Google Identity Services가 로드되지 않았습니다.");
+    }
+  }, []);
 
   const loginWithFedCM = async () => {
     if ("IdentityCredential" in window) {

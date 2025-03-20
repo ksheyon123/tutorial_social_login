@@ -3,8 +3,7 @@
 export const ConnectBtn = () => {
   const authApi = async () => {
     const params = {
-      client_id:
-        "142560295456-i4eaov3ff3i5s1vpnof8dioo81gp3icu.apps.googleusercontent.com",
+      client_id: process.env.NEXT_PUBLIC_GOOGLE_ID,
       redirect_uri: "http://localhost:3000",
       response_type: "token",
       scope: "https://www.googleapis.com/auth/drive.metadata.readonly",
@@ -21,8 +20,7 @@ export const ConnectBtn = () => {
 
   const fetchAuth = async () => {
     const params = {
-      client_id:
-        "142560295456-i4eaov3ff3i5s1vpnof8dioo81gp3icu.apps.googleusercontent.com",
+      client_id: process.env.NEXT_PUBLIC_GOOGLE_ID,
       redirect_uri: "http://localhost:3000",
       response_type: "token",
       scope: "https://www.googleapis.com/auth/drive.metadata.readonly",

@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
   response.headers.set("x-nonce", nonce);
 
   // 개발 환경과 프로덕션 환경에 따라 다른 CSP 정책 설정
-  let scriptSrc = `'self' 'nonce-${nonce}' https://accounts.google.com`;
+  let scriptSrc = `'self' 'nonce-${nonce}' https://accounts.google.com https://connect.facebook.net`;
 
   // 개발 환경에서는 'unsafe-eval' 허용 (Next.js 개발 모드에 필요)
   if (isDev) {
@@ -28,12 +28,12 @@ export function middleware(request: NextRequest) {
 
   // CSP 헤더 설정
   const cspHeader = `
-    default-src 'self' https://accounts.google.com;
+    default-src 'self' https://accounts.google.com https://connect.facebook.net;
     script-src ${scriptSrc};
-    style-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https://accounts.google.com;
     img-src 'self' data: blob:;
     font-src 'self';
-    connect-src 'self' https://accounts.google.com; 
+    connect-src 'self' https://accounts.google.com https://accounts.idp.example; 
     frame-src 'self' https://accounts.google.com;
     form-action 'self';
     base-uri 'self';
@@ -43,6 +43,9 @@ export function middleware(request: NextRequest) {
     .trim();
 
   response.headers.set("Content-Security-Policy", cspHeader);
+
+  // HTTP와 localhost 테스트 시 Referrer-Policy 헤더 설정
+  response.headers.set("Referrer-Policy", "no-referrer-when-downgrade");
 
   return response;
 }

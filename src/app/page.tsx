@@ -130,6 +130,8 @@ export default function Home() {
       // Google Identity Services 초기화
       window.google.accounts.id.initialize({
         client_id: process.env.NEXT_PUBLIC_GOOGLE_ID,
+        use_fedcm_for_prompt: true,
+        use_fedcm_for_button: true,
         callback,
       });
 
@@ -151,78 +153,65 @@ export default function Home() {
 
   const loginWithFedCM = async () => {
     if ("IdentityCredential" in window) {
-      console.log("RUN");
-      // If the feature is available, take action
-      const credentialRequest: any = {
-        mediation: "optional", // 'silent', 'required', 'optional' 중 선택
-        identity: {
-          providers: [
-            {
-              configURL:
-                "https://accounts.google.com/.well-known/fedcm-configuration",
-              clientId: "YOUR_CLIENT_ID",
-            },
-          ],
-        },
-      };
-      // FedCM API를 사용하여 자격 증명 요청
-      const credential = await navigator.credentials.get(credentialRequest);
-      console.log(credential);
+      try {
+        // 환경 변수가 제대로 설정되었는지 확인
+        const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_ID;
+        if (!googleClientId) {
+          console.error("Google Client ID is not configured");
+          return;
+        }
+
+        console.log("FedCM 시작: Client ID:", googleClientId);
+
+        // FedCM 요청 구성
+        const credentialRequest = {
+          identity: {
+            providers: [
+              {
+                configURL: "https://accounts.google.com/gsi/fedcm/config",
+                clientId: googleClientId,
+                // 사용자가 이미 로그인했다면 active, 아니면 silent나 permission 모드
+                mode: "active",
+                nonce: generateRandomNonce(), // 보안을 위한 난수 생성 함수
+              },
+            ],
+          },
+        };
+
+        // FedCM API로 자격 증명 요청
+        const credential = await navigator.credentials.get(credentialRequest);
+        console.log("인증 성공:", credential);
+
+        // 토큰 검증 및 사용자 로그인 처리
+        // ...
+
+        return credential;
+      } catch (error) {
+        console.error("FedCM 로그인 오류:", error);
+      }
     } else {
-      // FedCM is not supported, use a different identity solution
+      console.log(
+        "FedCM이 지원되지 않습니다. 대체 로그인 방식으로 전환합니다."
+      );
+      // 대체 로그인 방식 구현 (OAuth 리디렉션 등)
     }
+  };
+
+  // 보안을 위한 임의의 nonce 생성 함수
+  const generateRandomNonce = () => {
+    return (
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15)
+    );
   };
 
   return (
     <main className={styles.main}>
-      <h1>Google OAuth 2.0 인증 예제</h1>
+      <h1>서비스별 OAuth 인증 예제</h1>
 
-      {isAuthenticated ? (
-        <div className={styles.authContainer}>
-          <h2>인증 완료!</h2>
-          {userInfo && (
-            <div className={styles.userInfo}>
-              <h3>사용자 정보</h3>
-              {userInfo.picture && (
-                <img
-                  src={userInfo.picture}
-                  alt="프로필 이미지"
-                  className={styles.profileImage}
-                />
-              )}
-              <p>
-                <strong>이름:</strong> {userInfo.name}
-              </p>
-              <p>
-                <strong>이메일:</strong> {userInfo.email}
-              </p>
-              <p>
-                <strong>ID:</strong> {userInfo.id}
-              </p>
-            </div>
-          )}
-          <button onClick={handleLogout} className={styles.logoutButton}>
-            로그아웃
-          </button>
-
-          <div className={styles.tokenInfo}>
-            <h3>액세스 토큰</h3>
-            <div className={styles.tokenDisplay}>
-              {accessToken ? accessToken.substring(0, 20) + "..." : "토큰 없음"}
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className={styles.loginContainer}>
-          <p>Google 계정으로 로그인하세요</p>
-          <button onClick={handleGoogleLogin} className={styles.loginButton}>
-            Google로 로그인
-          </button>
-          <button onClick={loginWithFedCM}>로그인 with FedCM</button>
-          <div ref={googleButtonRef}></div>
-          <DynamicLoginButton />
-        </div>
-      )}
+      <section>
+        <h3>Facebook</h3>
+      </section>
     </main>
   );
 }

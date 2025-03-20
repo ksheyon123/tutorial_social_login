@@ -31,6 +31,12 @@ export default function RootLayout({
         defer
         nonce={nonce}
       ></script>
+      <script
+        async
+        defer
+        crossOrigin="anonymous"
+        src="https://connect.facebook.net/en_US/sdk.js"
+      ></script>
       <body className={inter.className}>{children}</body>
     </html>
   );
